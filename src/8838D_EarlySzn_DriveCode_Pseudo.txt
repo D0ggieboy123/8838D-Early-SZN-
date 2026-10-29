@@ -1,0 +1,55 @@
+// = A Coment
+
+https://ez-robotics.github.io/EZ-Template/
+
+// Chassis constructor
+Drive chassis = (CHASSIS PORTS = (-13, 14, -20, 16,)  IMU PORT = 15,  WHEEL DIAMETER = 2.75, CHASSIS RPM = 450);
+
+function initialize(
+
+  Auton Selector(
+    If Selected then print on screen ("PID lift example for PID tuning") and run pid lift example,
+    If Selected then print on screen("Skills Autonomous route") and run autonomous skills,
+  );
+  
+  left lift encoder Resetposition
+  lift pid set exit conditions = (80, 50, 300, 150, 500, 500);
+)
+
+function autonomous(
+  chassis reset PidTargets  // Resets PID targets to 0
+  chassis reset DriveImu    // Reset gyro position to 0
+  chassis reset DriveSensor // Reset drive sensors to 0
+  chassis set Braking to (Hold)  // Set motors to hold.  This helps autonomous consistency
+)
+
+
+function opcontrol(
+  // This is preference to what you like to drive on
+  chassis.drive_brake_set(MOTOR_BRAKE_COAST);
+
+  while true(
+    chassis set drive to (SplitArcade);   // Standard split arcade
+
+  // Lift functions
+    if Button ((ButtonL1) Pressed) then(
+        LeftLiftMotor move(127 VOLTS, forward)
+        RightLiftMotor move(127 VOLTS, forward)
+    )
+    else if button ((Button(ButtonL2) Pressed) then(
+        LeftLiftMotor move(127 VOLTS, reverse);
+        RightLiftMotor move(127 VOLTS, reverse);
+    )
+    else(
+        LeftLiftMotor move(0 VOLTS);
+        RightLiftMotor move(0 VOLTS);
+    )
+
+  // Claw functions
+  If Button((ButtonR1) Pressed) Claw Pneumatic ButtonToggle;
+  
+
+    pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
+  )
+ )
+)
